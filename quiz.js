@@ -1,3 +1,4 @@
+
 // دالة checkAnswer
 function checkAnswer() {
     // تعريف الإجابة الصحيحة
