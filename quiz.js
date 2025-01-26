@@ -1,26 +1,25 @@
-// دالة checkAnswer
 function checkAnswer() {
-    // الإجابة الصحيحة
+    // The correct answer is 4
     const correctAnswer = "4";
-
-    // الحصول على العنصر الذي تم اختياره بواسطة المستخدم
+    
+    // Retrieve the user's selected answer
     const userAnswer = document.querySelector('input[name="quiz"]:checked');
-
-    // التأكد من أن المستخدم قد اختار إجابة
-    if (userAnswer) {
-        // مقارنة الإجابة المختارة مع الإجابة الصحيحة
-        if (userAnswer.value === correctAnswer) {
-            document.getElementById("feedback").textContent = "Correct! Well done.";
-        } else {
-            document.getElementById("feedback").textContent = "That's incorrect. Try again!";
-        }
+    
+    // If no answer is selected, exit the function
+    if (!userAnswer) {
+        document.getElementById("feedback").textContent = "Please select an answer!";
+        return;
+    }
+    
+    // Compare the selected answer with the correct answer
+    if (userAnswer.value === correctAnswer) {
+        document.getElementById("feedback").textContent = "Correct! Well done.";
     } else {
-        // إذا لم يختار المستخدم إجابة
-        document.getElementById("feedback").textContent = "Please select an answer.";
+        document.getElementById("feedback").textContent = "That's incorrect. Try again!";
     }
 }
 
-// إضافة مستمع الحدث للزر
-document.getElementById("submit-answer").addEventListener("cl
+// Attach event listener to the submit button
+document.getElementById("submit-answer").addEventListener("click", checkAnswer);
 
 
