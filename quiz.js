@@ -1,17 +1,17 @@
 function checkAnswer() {
-    // The correct answer is 4
+    // الإجابة الصحيحة هي 4
     const correctAnswer = "4";
     
-    // Retrieve the user's selected answer
+    // استرجاع إجابة المستخدم المحددة
     const userAnswer = document.querySelector('input[name="quiz"]:checked');
     
-    // If no answer is selected, exit the function
+    // إذا لم يتم اختيار إجابة، يتم الخروج من الدالة
     if (!userAnswer) {
         document.getElementById("feedback").textContent = "Please select an answer!";
         return;
     }
     
-    // Compare the selected answer with the correct answer
+    // مقارنة إجابة المستخدم بالإجابة الصحيحة
     if (userAnswer.value === correctAnswer) {
         document.getElementById("feedback").textContent = "Correct! Well done.";
     } else {
@@ -19,7 +19,5 @@ function checkAnswer() {
     }
 }
 
-// Attach event listener to the submit button
+// استرجاع زر "Submit Answer" وإضافة مستمع الحدث له
 document.getElementById("submit-answer").addEventListener("click", checkAnswer);
-
-
