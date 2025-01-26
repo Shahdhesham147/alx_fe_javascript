@@ -1,23 +1,24 @@
+// تعريف دالة التحقق من الإجابة
 function checkAnswer() {
-    // الإجابة الصحيحة هي 4
+    // الإجابة الصحيحة
     const correctAnswer = "4";
-    
-    // استرجاع إجابة المستخدم المحددة
-    const userAnswer = document.querySelector('input[name="quiz"]:checked');
-    
-    // إذا لم يتم اختيار إجابة، يتم الخروج من الدالة
-    if (!userAnswer) {
-        document.getElementById("feedback").textContent = "Please select an answer!";
-        return;
-    }
-    
-    // مقارنة إجابة المستخدم بالإجابة الصحيحة
-    if (userAnswer.value === correctAnswer) {
-        document.getElementById("feedback").textContent = "Correct! Well done.";
+
+    // الحصول على الإجابة المختارة من المستخدم
+    const userAnswer = document.querySelector('input[name="quiz"]:checked')?.value;
+
+    // التأكد من أن المستخدم اختار إجابة
+    if (userAnswer) {
+        // التحقق من الإجابة
+        if (userAnswer === correctAnswer) {
+            document.getElementById('feedback').textContent = "Correct! Well done.";
+        } else {
+            document.getElementById('feedback').textContent = "That's incorrect. Try again!";
+        }
     } else {
-        document.getElementById("feedback").textContent = "That's incorrect. Try again!";
+        // إذا لم يقم المستخدم باختيار أي إجابة
+        document.getElementById('feedback').textContent = "Please select an answer.";
     }
 }
 
-// استرجاع زر "Submit Answer" وإضافة مستمع الحدث له
-document.getElementById("submit-answer").addEventListener("click", checkAnswer);
+// إضافة مستمع حدث للزر
+document.getElementById('submit-answer').addEventListener('click', checkAnswer);
