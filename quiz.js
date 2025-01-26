@@ -1,4 +1,3 @@
-
 // دالة checkAnswer
 function checkAnswer() {
     // تعريف الإجابة الصحيحة
@@ -23,3 +22,4 @@ function checkAnswer() {
 
 // إضافة مستمع الحدث للزر
 document.getElementById("submit-answer").addEventListener("click", checkAnswer);
+
