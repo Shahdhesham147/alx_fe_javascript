@@ -87,3 +87,32 @@ document.addEventListener("DOMContentLoaded", () => {
 newQuoteButton.addEventListener("click", showRandomQuote);
 addQuoteButton.addEventListener("click", addQuote);
 categoryFilter.addEventListener("change", filterQuotes);
+async function fetchQuotesFromServer() {
+    try {
+        const response = await fetch('https://jsonplaceholder.typicode.com/posts'); // جلب البيانات
+        const serverQuotes = await response.json();
+
+        // جلب البيانات المحلية الموجودة مسبقًا
+        let localQuotes = JSON.parse(localStorage.getItem('quotes')) || [];
+
+        // حل التعارض بين البيانات
+        resolveConflict(localQuotes, serverQuotes);
+
+        // إشعار المستخدم بالتحديث
+        showNotification("تم تحديث الاقتباسات من الخادم!");
+    } catch (error) {
+        console.error('حدث خطأ أثناء جلب البيانات:', error);
+    }
+}
+function resolveConflict(localQuotes, serverQuotes) {
+    const mergedQuotes = [...serverQuotes, ...localQuotes.filter(lq => !serverQuotes.some(sq => sq.id === lq.id))];
+    localStorage.setItem('quotes', JSON.stringify(mergedQuotes));
+    displayQuotes(mergedQuotes);
+}
+function showNotification(message) {
+    const notification = document.createElement('div');
+    notification.textContent = message;
+    notification.style.cssText = "position: fixed; top: 10px; right: 10px; background: green; color: white; padding: 10px;";
+    document.body.appendChild(notification);
+    setTimeout(() => notification.remove(), 3000);
+}
