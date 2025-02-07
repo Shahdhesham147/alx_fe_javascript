@@ -77,6 +77,11 @@ window.addEventListener("DOMContentLoaded", () => {
     populateCategories();
     filterQuotes();
 });
+document.addEventListener("DOMContentLoaded", () => {
+    fetchQuotesFromServer();
+    setInterval(fetchQuotesFromServer, 30000); // تحديث البيانات كل 30 ثانية
+});
+
 
 // ربط الأحداث بالأزرار
 newQuoteButton.addEventListener("click", showRandomQuote);
