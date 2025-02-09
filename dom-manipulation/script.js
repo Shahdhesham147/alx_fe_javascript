@@ -273,5 +273,84 @@ showNotification("Quotes synced successfully with the server!", "info");
 showNotification("Quotes imported successfully!", "success");
 showNotification("Quotes exported successfully!", "success");
 showNotification("New quote added successfully!", "success");
+async function syncQuotes() {
+    try {
+        const response = await fetch("https://jsonplaceholder.typicode.com/posts");
+        if (!response.ok) throw new Error("Failed to fetch data from server");
+
+        const serverQuotes = await response.json();
+        const localQuotes = JSON.parse(localStorage.getItem("quotes")) || [];
+
+        let hasConflicts = false;
+
+        // مقارنة البيانات المحلية مع بيانات الخادم
+        serverQuotes.forEach((serverQuote) => {
+            const existsLocally = localQuotes.some(q => q.id === serverQuote.id);
+            if (!existsLocally) {
+                localQuotes.push(serverQuote); // إضافة الجديد من الخادم
+                hasConflicts = true; // اكتشاف اختلاف
+            }
+        });
+
+        localStorage.setItem("quotes", JSON.stringify(localQuotes));
+
+        if (hasConflicts) {
+            showNotification("Data conflicts detected! Server data merged.", "error");
+        } else {
+            showNotification("Quotes synced successfully with the server!", "success");
+        }
+
+    } catch (error) {
+        showNotification("Error syncing data: " + error.message, "error");
+    }
+}
+function importFromJsonFile(event) {
+    const fileReader = new FileReader();
+    fileReader.onload = function(event) {
+        try {
+            const importedQuotes = JSON.parse(event.target.result);
+            let quotes = JSON.parse(localStorage.getItem("quotes")) || [];
+
+            quotes.push(...importedQuotes);
+            localStorage.setItem("quotes", JSON.stringify(quotes));
+
+            showNotification("Quotes imported successfully!", "success");
+        } catch (error) {
+            showNotification("Invalid JSON file!", "error");
+        }
+    };
+    fileReader.readAsText(event.target.files[0]);
+}
+function exportToJsonFile() {
+    const quotes = JSON.parse(localStorage.getItem("quotes")) || [];
+    const jsonString = JSON.stringify(quotes, null, 2);
+    const blob = new Blob([jsonString], { type: "application/json" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "quotes.json";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    showNotification("Quotes exported successfully!", "success");
+}
+function addQuote() {
+    const text = document.getElementById("newQuoteText").value.trim();
+    const category = document.getElementById("newQuoteCategory").value.trim();
+
+    if (!text || !category) {
+        showNotification("Please enter both quote and category!", "error");
+        return;
+    }
+
+    const quotes = JSON.parse(localStorage.getItem("quotes")) || [];
+    quotes.push({ text, category });
+
+    localStorage.setItem("quotes", JSON.stringify(quotes));
+    showNotification("New quote added successfully!", "success");
+
+    document.getElementById("newQuoteText").value = "";
+    document.getElementById("newQuoteCategory").value = "";
+}
 
 
