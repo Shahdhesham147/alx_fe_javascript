@@ -143,4 +143,28 @@ function exportToJsonFile() {
     a.click();
     document.body.removeChild(a);
 }
+function importFromJsonFile(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const fileReader = new FileReader();
+    fileReader.onload = function (e) {
+        try {
+            const importedQuotes = JSON.parse(e.target.result);
+            if (Array.isArray(importedQuotes)) {
+                quotes.push(...importedQuotes);
+                saveQuotes(); // حفظ في Local Storage
+                populateCategories(); // تحديث الفئات
+                filterQuotes(); // إعادة تحميل القائمة
+                alert("Quotes imported successfully!");
+            } else {
+                alert("Invalid JSON format!");
+            }
+        } catch (error) {
+            alert("Error reading JSON file.");
+        }
+    };
+
+    fileReader.readAsText(file);
+}
 
