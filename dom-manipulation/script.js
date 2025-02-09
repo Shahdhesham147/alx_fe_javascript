@@ -364,4 +364,36 @@ function showNotification(message, type = "success") {
         notification.remove();
     }, 3000); // يتم إخفاء الإشعار بعد 3 ثوانٍ
 }
+async function syncQuotes() {
+    try {
+        const response = await fetch("https://jsonplaceholder.typicode.com/posts");
+        if (!response.ok) throw new Error("Failed to fetch data from server");
+
+        const serverQuotes = await response.json();
+        const localQuotes = JSON.parse(localStorage.getItem("quotes")) || [];
+
+        let hasConflicts = false;
+
+        // مقارنة البيانات المحلية مع بيانات الخادم
+        serverQuotes.forEach((serverQuote) => {
+            const existsLocally = localQuotes.some(q => q.id === serverQuote.id);
+            if (!existsLocally) {
+                localQuotes.push(serverQuote); // إضافة الجديد من الخادم
+                hasConflicts = true; // اكتشاف اختلاف
+            }
+        });
+
+        localStorage.setItem("quotes", JSON.stringify(localQuotes));
+
+        if (hasConflicts) {
+            showNotification("Data conflicts detected! Server data merged.", "error");
+        } else {
+            showNotification("Quotes synced with server!", "success"); // ✅ مطلوب منكِ
+        }
+
+    } catch (error) {
+        showNotification("Error syncing data: " + error.message, "error");
+    }
+}
+
 
