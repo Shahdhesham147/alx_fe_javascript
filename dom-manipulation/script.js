@@ -238,4 +238,40 @@ function showNotification(message) {
         document.body.removeChild(notification);
     }, 3000);
 }
+function showNotification(message, type = "success") {
+    const notification = document.createElement("div");
+    notification.textContent = message;
+    notification.style.position = "fixed";
+    notification.style.bottom = "20px";
+    notification.style.right = "20px";
+    notification.style.padding = "12px";
+    notification.style.borderRadius = "5px";
+    notification.style.boxShadow = "0 4px 6px rgba(0, 0, 0, 0.1)";
+    notification.style.fontSize = "14px";
+    notification.style.zIndex = "1000";
+    
+    // تحديد لون الإشعار بناءً على نوعه
+    if (type === "success") {
+        notification.style.backgroundColor = "#28a745"; // أخضر للإشعارات الناجحة
+        notification.style.color = "white";
+    } else if (type === "error") {
+        notification.style.backgroundColor = "#dc3545"; // أحمر للأخطاء
+        notification.style.color = "white";
+    } else if (type === "info") {
+        notification.style.backgroundColor = "#007bff"; // أزرق للمعلومات
+        notification.style.color = "white";
+    }
+
+    document.body.appendChild(notification);
+
+    // إزالة الإشعار بعد 3 ثوانٍ
+    setTimeout(() => {
+        document.body.removeChild(notification);
+    }, 3000);
+}
+showNotification("Quotes synced successfully with the server!", "info");
+showNotification("Quotes imported successfully!", "success");
+showNotification("Quotes exported successfully!", "success");
+showNotification("New quote added successfully!", "success");
+
 
