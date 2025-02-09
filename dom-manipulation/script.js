@@ -85,3 +85,49 @@ function filterQuotes() {
 
 // تعيين زر إظهار اقتباس جديد
 document.getElementById("newQuote").addEventListener("click", showRandomQuote);
+function addQuote() {
+    const quoteText = document.getElementById("newQuoteText").value.trim();
+    const quoteCategory = document.getElementById("newQuoteCategory").value.trim();
+
+    if (quoteText && quoteCategory) {
+        const newQuote = { text: quoteText, category: quoteCategory };
+
+        // إضافة الاقتباس إلى المصفوفة
+        quotes.push(newQuote);
+        saveQuotes();  // حفظ في Local Storage
+
+        populateCategories(); // تحديث القائمة المنسدلة
+        filterQuotes(); // إعادة تحميل الاقتباسات
+
+        // تفريغ الحقول
+        document.getElementById("newQuoteText").value = "";
+        document.getElementById("newQuoteCategory").value = "";
+    } else {
+        alert("Please enter both quote and category!");
+    }
+}
+function createAddQuoteForm() {
+    const formContainer = document.createElement("div");
+
+    formContainer.innerHTML = `
+        <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
+        <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
+        <button id="addQuoteBtn">Add Quote</button>
+    `;
+
+    document.body.appendChild(formContainer);
+
+    // إضافة حدث عند الضغط على زر الإضافة
+    document.getElementById("addQuoteBtn").addEventListener("click", addQuote);
+}
+document.getElementById("newQuote").addEventListener("click", showRandomQuote);
+function showRandomQuote() {
+    if (quotes.length > 0) {
+        const randomIndex = Math.floor(Math.random() * quotes.length);
+        const quote = quotes[randomIndex];
+        document.getElementById("quoteDisplay").innerText = `"${quote.text}" - (${quote.category})`;
+    } else {
+        document.getElementById("quoteDisplay").innerText = "No quotes available.";
+    }
+}
+
