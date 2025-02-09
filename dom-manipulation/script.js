@@ -167,4 +167,75 @@ function importFromJsonFile(event) {
 
     fileReader.readAsText(file);
 }
+const SERVER_URL = "https://jsonplaceholder.typicode.com/posts"; // Mock API (يمكن تغييره لاحقًا)
+
+async function fetchQuotesFromServer() {
+    try {
+        const response = await fetch(SERVER_URL);
+        if (!response.ok) throw new Error("Failed to fetch quotes from server.");
+        
+        const serverQuotes = await response.json();
+        console.log("Fetched quotes from server:", serverQuotes);
+
+        // تحديث localStorage بالمعلومات الجديدة
+        syncQuotes(serverQuotes);
+    } catch (error) {
+        console.error("Error fetching quotes:", error);
+    }
+}
+function syncQuotes(serverQuotes) {
+    const localQuotes = JSON.parse(localStorage.getItem("quotes")) || [];
+
+    // حل التعارض: إذا كان هناك اقتباس جديد في الخادم غير موجود محليًا، نضيفه
+    serverQuotes.forEach(serverQuote => {
+        if (!localQuotes.some(localQuote => localQuote.id === serverQuote.id)) {
+            localQuotes.push(serverQuote);
+        }
+    });
+
+    // تحديث Local Storage
+    localStorage.setItem("quotes", JSON.stringify(localQuotes));
+    
+    // تحديث واجهة المستخدم
+    filterQuotes();
+    alert("Quotes synced successfully with the server!");
+}
+async function postQuoteToServer(quote) {
+    try {
+        const response = await fetch(SERVER_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(quote)
+        });
+
+        if (!response.ok) throw new Error("Failed to post quote to server.");
+
+        const newQuote = await response.json();
+        console.log("Quote posted successfully:", newQuote);
+
+        alert("Quote successfully posted to server!");
+    } catch (error) {
+        console.error("Error posting quote:", error);
+    }
+}
+setInterval(fetchQuotesFromServer, 30000); // تحقق من الخادم كل 30 ثانية
+function showNotification(message) {
+    const notification = document.createElement("div");
+    notification.textContent = message;
+    notification.style.position = "fixed";
+    notification.style.bottom = "10px";
+    notification.style.right = "10px";
+    notification.style.padding = "10px";
+    notification.style.backgroundColor = "green";
+    notification.style.color = "white";
+    notification.style.borderRadius = "5px";
+    
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+        document.body.removeChild(notification);
+    }, 3000);
+}
 
